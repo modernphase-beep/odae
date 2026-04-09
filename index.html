@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODAE — Oficina de Desarrollo Artístico Extremeño</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Variables ─── */
+    :root {
+      --bg:        #0C0C0C;
+      --surface:   #141414;
+      --card:      #1A1A1A;
+      --border:    #2A2A2A;
+      --yellow:    #F5C518;
+      --yellow-dim:#C49A10;
+      --white:     #FFFFFF;
+      --gray:      #7A7A7A;
+      --light:     #CCCCCC;
+    }
+
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Utility ─── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--bg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: var(--white);
+    }
+    .section-title span { color: var(--yellow); }
+    .section-sub {
+      color: var(--gray);
+      font-size: 1rem;
+      margin-top: 12px;
+      max-width: 560px;
+    }
+    section { padding: 96px 0; }
+
+    /* ─── Navbar ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(12,12,12,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--yellow); }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--light);
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--yellow); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-yellow { background: var(--yellow); color: var(--bg); }
+    .btn-yellow:hover { background: #FFD700; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--yellow);
+      border: 1.5px solid var(--yellow);
+    }
+    .btn-outline:hover { background: var(--yellow); color: var(--bg); }
+    .nav-cta { display: flex; gap: 12px; }
+
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); transition: all 0.3s; }
+
+    /* ─── Hero ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(245,197,24,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(245,197,24,0.04) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+    }
+    .hero-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow-line { width: 40px; height: 2px; background: var(--yellow); }
+    .hero-eyebrow-text {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      font-weight: 600;
+    }
+    .hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+    .hero-title .highlight {
+      color: var(--yellow);
+      display: inline-block;
+      position: relative;
+    }
+    .hero-sub {
+      margin-top: 20px;
+      font-size: 1.05rem;
+      color: var(--light);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
+    .hero-location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 40px;
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+    .hero-location svg { color: var(--yellow); flex-shrink: 0; }
+
+    /* Hero Visual */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .orbit-diagram {
+      position: relative;
+      width: 380px;
+      height: 380px;
+    }
+    .orbit-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90px; height: 90px;
+      background: var(--yellow);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .orbit-center-icon { font-size: 1.8rem; }
+    .orbit-center-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.6rem;
+      color: var(--bg);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .orbit-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 300px; height: 300px;
+      transform: translate(-50%, -50%);
+      border: 1px dashed rgba(245,197,24,0.25);
+      border-radius: 50%;
+      animation: spin 30s linear infinite;
+    }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    .orbit-node {
+      position: absolute;
+      width: 72px; height: 72px;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: border-color 0.3s;
+      animation: counter-spin 30s linear infinite;
+    }
+    @keyframes counter-spin { to { transform: rotate(-360deg); } }
+    .orbit-node:hover { border-color: var(--yellow); }
+    .orbit-node-label {
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-top: 3px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    /* Position nodes around the ring (r=150 from center of 380px container = 190px center) */
+    .node-1 { top: calc(50% - 150px - 36px); left: calc(50% - 36px); }
+    .node-2 { top: calc(50% - 75px - 36px); left: calc(50% + 130px - 36px); }
+    .node-3 { top: calc(50% + 75px - 36px); left: calc(50% + 130px - 36px); }
+    .node-4 { top: calc(50% + 150px - 36px); left: calc(50% - 36px); }
+    .node-5 { top: calc(50% + 75px - 36px); left: calc(50% - 130px - 36px); }
+    .node-6 { top: calc(50% - 75px - 36px); left: calc(50% - 130px - 36px); }
+
+    /* ─── Stats Bar ─── */
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .stats-bar section { padding: 0; }
+    .stats-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      divide: var(--border);
+    }
+    .stat-item {
+      padding: 32px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.2rem;
+      color: var(--yellow);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--gray); margin-top: 6px; letter-spacing: 0.5px; }
+
+    /* ─── About ─── */
+    #about .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-visual::before {
+      content: 'ODAE';
+      position: absolute;
+      bottom: -20px; right: -10px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 7rem;
+      color: rgba(245,197,24,0.04);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .about-quote {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      color: var(--white);
+      border-left: 3px solid var(--yellow);
+      padding-left: 20px;
+      margin-bottom: 24px;
+    }
+    .about-detail { color: var(--gray); font-size: 0.9rem; line-height: 1.8; margin-bottom: 12px; }
+    .about-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.2);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      margin: 4px 4px 0 0;
+    }
+    .about-pills { margin-top: 24px; }
+    .about-text p { color: var(--light); line-height: 1.8; margin-bottom: 20px; }
+    .about-text p strong { color: var(--white); }
+
+    /* ─── Services ─── */
+    #services { background: var(--surface); }
+    .services-header { text-align: center; margin-bottom: 60px; }
+    .services-header .section-sub { margin: 12px auto 0; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 36px 28px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--yellow);
+      transition: width 0.4s ease;
+    }
+    .service-card:hover { border-color: rgba(245,197,24,0.3); transform: translateY(-4px); }
+    .service-card:hover::after { width: 100%; }
+    .service-icon {
+      width: 52px; height: 52px;
+      background: rgba(245,197,24,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .service-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+    .service-desc { color: var(--gray); font-size: 0.9rem; line-height: 1.7; }
+
+    /* ─── Team ─── */
+    .team-header { text-align: center; margin-bottom: 60px; }
+    .team-header .section-sub { margin: 12px auto 0; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .team-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .team-card:hover { border-color: rgba(245,197,24,0.4); transform: translateY(-4px); }
+    .team-card-header {
+      background: linear-gradient(135deg, var(--surface) 0%, #0F0F0F 100%);
+      padding: 40px 28px 28px;
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .team-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--bg);
+      flex-shrink: 0;
+      border: 3px solid rgba(245,197,24,0.3);
+    }
+    .team-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .team-role { color: var(--yellow); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
+    .team-body { padding: 24px 28px; }
+    .team-bio { color: var(--gray); font-size: 0.88rem; line-height: 1.7; }
+    .team-tag {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      color: var(--light);
+      margin: 6px 4px 0 0;
+    }
+    .team-tags { margin-top: 16px; }
+
+    /* ─── Proposal Form ─── */
+    #propuesta {
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    #propuesta::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(245,197,24,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .propuesta-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .propuesta-info h2 { margin-bottom: 20px; }
+    .propuesta-info p { color: var(--gray); line-height: 1.8; margin-bottom: 28px; font-size: 0.95rem; }
+    .propuesta-steps { display: flex; flex-direction: column; gap: 20px; }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--yellow);
+      color: var(--bg);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-text strong { display: block; font-size: 0.9rem; margin-bottom: 2px; }
+    .step-text span { font-size: 0.82rem; color: var(--gray); }
+
+    /* Form */
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 40px;
+    }
+    .form-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 28px;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--light);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    input, select, textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+    input::placeholder, textarea::placeholder { color: var(--gray); }
+    select option { background: var(--surface); }
+    textarea { resize: vertical; min-height: 100px; }
+    .file-upload {
+      border: 1.5px dashed var(--border);
+      border-radius: 4px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .file-upload:hover { border-color: var(--yellow); background: rgba(245,197,24,0.03); }
+    .file-upload input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: none;
+    }
+    .file-upload-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .file-upload-text { font-size: 0.85rem; color: var(--light); }
+    .file-upload-hint { font-size: 0.75rem; color: var(--gray); margin-top: 4px; }
+    .file-name { font-size: 0.8rem; color: var(--yellow); margin-top: 8px; display: none; }
+    .form-submit { margin-top: 24px; width: 100%; padding: 14px; font-size: 0.95rem; }
+    .form-note { font-size: 0.75rem; color: var(--gray); margin-top: 12px; text-align: center; }
+    /* Success message */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+    .form-success h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+    .form-success p { color: var(--gray); font-size: 0.9rem; }
+
+    /* ─── Contact ─── */
+    #contacto .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .contact-info h2 { margin-bottom: 20px; }
+    .contact-info p { color: var(--gray); line-height: 1.8; margin-bottom: 36px; font-size: 0.95rem; }
+    .contact-items { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .contact-icon {
+      width: 44px; height: 44px;
+      background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-item-text strong { display: block; font-size: 0.85rem; color: var(--white); margin-bottom: 2px; }
+    .contact-item-text span { font-size: 0.85rem; color: var(--gray); }
+    .social-links { display: flex; gap: 12px; margin-top: 36px; }
+    .social-link {
+      width: 44px; height: 44px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+    .social-link:hover { background: var(--yellow); border-color: var(--yellow); }
+    .contact-map {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--gray);
+      font-size: 0.9rem;
+      position: relative;
+    }
+    .map-placeholder-icon { font-size: 2.5rem; }
+    .map-label { font-size: 0.85rem; color: var(--gray); }
+    .map-region {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      background: #080808;
+      border-top: 1px solid var(--border);
+      padding: 48px 0 28px;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 40px;
+    }
+    .footer-brand .nav-logo { font-size: 1.3rem; margin-bottom: 12px; }
+    .footer-brand p { color: var(--gray); font-size: 0.85rem; line-height: 1.7; max-width: 280px; }
+    .footer-col h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { color: var(--gray); font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--yellow); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { color: var(--gray); font-size: 0.8rem; }
+    .footer-badge {
+      background: rgba(245,197,24,0.1);
+      border: 1px solid rgba(245,197,24,0.2);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* ─── Mobile menu ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 64px 0 0 0;
+      background: rgba(12,12,12,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+    .mobile-menu.active { display: flex; }
+    .mobile-menu a {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--light);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--yellow); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .orbit-diagram { width: 280px; height: 280px; }
+      .node-1 { top: calc(50% - 110px - 28px); left: calc(50% - 28px); }
+      .node-2 { top: calc(50% - 55px - 28px); left: calc(50% + 95px - 28px); }
+      .node-3 { top: calc(50% + 55px - 28px); left: calc(50% + 95px - 28px); }
+      .node-4 { top: calc(50% + 110px - 28px); left: calc(50% - 28px); }
+      .node-5 { top: calc(50% + 55px - 28px); left: calc(50% - 95px - 28px); }
+      .node-6 { top: calc(50% - 55px - 28px); left: calc(50% - 95px - 28px); }
+      .orbit-ring { width: 220px; height: 220px; }
+      .orbit-node { width: 56px; height: 56px; font-size: 1.1rem; }
+      .orbit-center { width: 70px; height: 70px; }
+      #about .about-inner { grid-template-columns: 1fr; gap: 40px; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .team-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+      .propuesta-inner { grid-template-columns: 1fr; gap: 40px; }
+      #contacto .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .stat-item:nth-child(2) { border-right: none; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .hamburger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 64px 0; }
+      .form-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: 1fr 1fr; }
+      .hero-title { font-size: 2.4rem; }
+      .orbit-diagram { width: 220px; height: 220px; }
+    }
+
+    /* ─── Animations ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Print / PDF ─── */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      nav { display: none !important; }
+      .mobile-menu { display: none !important; }
+      .hamburger { display: none !important; }
+      section { padding: 48px 0; page-break-inside: avoid; }
+      #hero { min-height: auto; padding-top: 40px; }
+      .hero-inner { grid-template-columns: 1fr 1fr; }
+      .orbit-ring { animation: none; }
+      .orbit-node { animation: none; }
+      .fade-up { opacity: 1 !important; transform: none !important; }
+      .services-grid { grid-template-columns: repeat(3, 1fr); }
+      .team-grid { grid-template-columns: repeat(3, 1fr); }
+      .form-card { break-inside: avoid; }
+      .stats-inner { grid-template-columns: repeat(4, 1fr); }
+      .about-inner { grid-template-columns: 1fr 1fr; }
+      .propuesta-inner { grid-template-columns: 1fr 1.6fr; }
+      .contact-inner { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#hero" class="nav-logo">OD<span>AE</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">Quiénes somos</a></li>
+      <li><a href="#services">Servicios</a></li>
+      <li><a href="#team">El equipo</a></li>
+      <li><a href="#propuesta">Envía tu propuesta</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#propuesta" class="btn btn-yellow">Envía tu propuesta</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="toggleMenu()">Quiénes somos</a>
+  <a href="#services" onclick="toggleMenu()">Servicios</a>
+  <a href="#team" onclick="toggleMenu()">El equipo</a>
+  <a href="#propuesta" onclick="toggleMenu()">Envía tu propuesta</a>
+  <a href="#contacto" onclick="toggleMenu()">Contacto</a>
+  <a href="#propuesta" class="btn btn-yellow" onclick="toggleMenu()">Envía tu propuesta →</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container hero-inner">
+    <div class="hero-content fade-up">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span class="hero-eyebrow-text">Extremadura · Industria Musical</span>
+      </div>
+      <h1 class="hero-title">
+        Tu carrera,<br/>
+        en las mejores<br/>
+        <span class="highlight">manos.</span>
+      </h1>
+      <p class="hero-sub">
+        ODAE es la oficina que conecta el talento artístico extremeño con el equipo profesional que necesita para crecer: management, producción, distribución y formación real de la industria.
+      </p>
+      <div class="hero-actions">
+        <a href="#propuesta" class="btn btn-yellow">Envía tu propuesta →</a>
+        <a href="#about" class="btn btn-outline">Conoce ODAE</a>
+      </div>
+      <div class="hero-location">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Badajoz · Cáceres · Extremadura
+      </div>
+    </div>
+
+    <div class="hero-visual fade-up">
+      <div class="orbit-diagram">
+        <div class="orbit-ring"></div>
+        <div class="orbit-center">
+          <div class="orbit-center-icon">🎤</div>
+          <div class="orbit-center-label">Artista</div>
+        </div>
+        <div class="orbit-node node-1">
+          <div>🎯</div>
+          <div class="orbit-node-label">Manager</div>
+        </div>
+        <div class="orbit-node node-2">
+          <div>📣</div>
+          <div class="orbit-node-label">PR</div>
+        </div>
+        <div class="orbit-node node-3">
+          <div>🌐</div>
+          <div class="orbit-node-label">Digital</div>
+        </div>
+        <div class="orbit-node node-4">
+          <div>📚</div>
+          <div class="orbit-node-label">Formación</div>
+        </div>
+        <div class="orbit-node node-5">
+          <div>🎼</div>
+          <div class="orbit-node-label">A&R</div>
+        </div>
+        <div class="orbit-node node-6">
+          <div>🎚️</div>
+          <div class="orbit-node-label">Producción</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS BAR ═══ -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stat-item fade-up">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Áreas de servicio</div>
+      </div>
+      <div class="stat-item fade-up">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Fundadores especializados</div>
+      </div>
+      <div class="stat-item fade-up">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Enfoque en el artista</div>
+      </div>
+      <div class="stat-item fade-up">
+        <div class="stat-num">EX</div>
+        <div class="stat-label">Raíces extremeñas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-visual fade-up">
+        <div class="about-quote">
+          "La música no crece sola.<br/>Hay un equipo detrás."
+        </div>
+        <p class="about-detail">
+          En Extremadura existe talento artístico real. Lo que faltaba era la estructura profesional para llevarlo más lejos. ODAE nació para cambiar eso.
+        </p>
+        <p class="about-detail">
+          No somos solo gestores: somos el equipo completo que un artista emergente necesita para convertir su proyecto en una carrera sostenible.
+        </p>
+        <div class="about-pills">
+          <span class="about-pill">🎤 Management integral</span>
+          <span class="about-pill">🎚️ Producción</span>
+          <span class="about-pill">📣 Comunicación</span>
+          <span class="about-pill">🌐 Distribución digital</span>
+          <span class="about-pill">📚 Formación de industria</span>
+          <span class="about-pill">🏷️ A&R</span>
+        </div>
+      </div>
+      <div class="about-text fade-up">
+        <div class="tag">Quiénes somos</div>
+        <h2 class="section-title">El equipo real<br/><span>detrás del artista</span></h2>
+        <p>
+          <strong>ODAE — Oficina de Desarrollo Artístico Extremeño</strong> es una agencia especializada en acompañar a artistas emergentes de Extremadura en cada etapa de su carrera artística.
+        </p>
+        <p>
+          Desde la fase creativa y la producción musical hasta la visibilidad en medios, la distribución en plataformas digitales y la formación en la industria musical: somos el equipo que tu proyecto necesita.
+        </p>
+        <p>
+          Creemos en el talento local y en que un artista extremeño puede llegar tan lejos como cualquier otro, con el respaldo adecuado. Por eso, además de gestionar carreras, formamos a los artistas en los entresijos reales del negocio musical.
+        </p>
+        <a href="#propuesta" class="btn btn-yellow" style="margin-top:8px;">Trabaja con nosotros →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="container">
+    <div class="services-header fade-up">
+      <div class="tag">Qué hacemos</div>
+      <h2 class="section-title">Servicios <span>completos</span></h2>
+      <p class="section-sub">Todo lo que necesitas para desarrollar tu carrera artística, bajo un mismo techo.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card fade-up">
+        <div class="service-icon">🎯</div>
+        <div class="service-name">Management Artístico</div>
+        <p class="service-desc">Coordinamos toda tu carrera: agenda, negociaciones, contratos, relaciones con sellos y promotores. Tú te centras en crear; nosotros en que todo funcione.</p>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">📣</div>
+        <div class="service-name">PR & Comunicación</div>
+        <p class="service-desc">Visibilidad en medios locales, regionales y nacionales. Notas de prensa, entrevistas, presencia en plataformas y construcción de imagen pública.</p>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">🎚️</div>
+        <div class="service-name">Producción Musical</div>
+        <p class="service-desc">Conectamos al artista con productores para desarrollar su sonido. Supervisión del proceso creativo y orientación en la identidad musical.</p>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">🏷️</div>
+        <div class="service-name">A&R — Desarrollo Artístico</div>
+        <p class="service-desc">Asesoramiento en el desarrollo artístico: repertorio, identidad, posicionamiento de mercado. Detectamos el potencial y lo llevamos al siguiente nivel.</p>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">🌐</div>
+        <div class="service-name">Distribución Digital</div>
+        <p class="service-desc">Subida y gestión de lanzamientos en Spotify, Apple Music, Amazon, YouTube Music y demás plataformas. Estrategia de pitching a playlists.</p>
+      </div>
+      <div class="service-card fade-up">
+        <div class="service-icon">📚</div>
+        <div class="service-name">Formación de Industria</div>
+        <p class="service-desc">Formamos al artista durante todo el proceso: derechos de autor, contratos, marketing musical, redes sociales, monetización y funcionamiento real del negocio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TEAM ═══ -->
+<section id="team">
+  <div class="container">
+    <div class="team-header fade-up">
+      <div class="tag">El equipo</div>
+      <h2 class="section-title">Los <span>fundadores</span></h2>
+      <p class="section-sub">Tres profesionales con un objetivo: impulsar el talento artístico de Extremadura.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fade-up">
+        <div class="team-card-header">
+          <div class="team-avatar">OE</div>
+          <div>
+            <div class="team-name">Oscar Elías</div>
+            <div class="team-role">Fundador · Co-director</div>
+          </div>
+        </div>
+        <div class="team-body">
+          <p class="team-bio">Visionario del proyecto ODAE y motor estratégico detrás de la oficina. Apasionado de la industria musical y del talento emergente extremeño.</p>
+          <div class="team-tags">
+            <span class="team-tag">Estrategia</span>
+            <span class="team-tag">Dirección</span>
+            <span class="team-tag">A&R</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-card-header">
+          <div class="team-avatar">IG</div>
+          <div>
+            <!-- TODO: Completar apellido de Ignacio -->
+            <div class="team-name">Ignacio</div>
+            <div class="team-role">Fundador · Co-director</div>
+          </div>
+        </div>
+        <div class="team-body">
+          <p class="team-bio">Co-fundador de ODAE con una sólida trayectoria en el mundo artístico y musical. Especialista en el acompañamiento y desarrollo de artistas emergentes.</p>
+          <div class="team-tags">
+            <span class="team-tag">Producción</span>
+            <span class="team-tag">Management</span>
+            <span class="team-tag">Desarrollo</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card fade-up">
+        <div class="team-card-header">
+          <div class="team-avatar">LV</div>
+          <div>
+            <div class="team-name">Luis Vallespín</div>
+            <div class="team-role">Fundador · Co-director</div>
+          </div>
+        </div>
+        <div class="team-body">
+          <p class="team-bio">Co-fundador de ODAE con visión clara sobre comunicación, tecnología y distribución digital en la industria musical contemporánea.</p>
+          <div class="team-tags">
+            <span class="team-tag">Comunicación</span>
+            <span class="team-tag">Digital</span>
+            <span class="team-tag">Formación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROPOSAL FORM ═══ -->
+<section id="propuesta">
+  <div class="container">
+    <div class="propuesta-inner">
+      <div class="propuesta-info fade-up">
+        <div class="tag">Artistas</div>
+        <h2 class="section-title">Envíanos<br/><span>tu propuesta</span></h2>
+        <p>
+          Si eres artista y crees que ODAE puede ser el equipo que necesitas, cuéntanos tu proyecto. Evaluamos cada propuesta de forma personalizada.
+        </p>
+        <div class="propuesta-steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Rellena el formulario</strong>
+              <span>Cuéntanos quién eres, qué música haces y qué buscas</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>Sube tu demo o enlace</strong>
+              <span>Adjunta canciones, demos o comparte tus plataformas</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Evaluamos tu proyecto</strong>
+              <span>El equipo ODAE revisa tu propuesta y te contactamos</span>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <strong>Primera reunión</strong>
+              <span>Si hay fit, organizamos una reunión para conoceros</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card fade-up">
+        <div class="form-title">Tu propuesta artística</div>
+        <div id="formWrapper">
+          <!--
+            CONFIGURACIÓN: Cambia "info@odae.es" por vuestro email real
+            FormSubmit procesa el formulario gratis sin necesidad de backend
+          -->
+          <form id="proposalForm" action="https://formsubmit.co/info@odae.es" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_subject" value="Nueva propuesta artística — ODAE" />
+            <input type="hidden" name="_next" value="about:blank" />
+            <input type="hidden" name="_captcha" value="false" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nombre">Nombre artístico *</label>
+                <input type="text" id="nombre" name="nombre_artistico" placeholder="Tu nombre o alias" required />
+              </div>
+              <div class="form-group">
+                <label for="nombre_real">Nombre real *</label>
+                <input type="text" id="nombre_real" name="nombre_real" placeholder="Nombre completo" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+              </div>
+              <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="+34 600 000 000" />
+              </div>
+              <div class="form-group">
+                <label for="genero">Género musical *</label>
+                <select id="genero" name="genero" required>
+                  <option value="" disabled selected>Selecciona un género</option>
+                  <option>Pop</option>
+                  <option>Urban / Trap / Rap</option>
+                  <option>Electrónica</option>
+                  <option>Rock / Indie</option>
+                  <option>Flamenco / Folk</option>
+                  <option>R&B / Soul</option>
+                  <option>Reggaeton</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ciudad">Ciudad / Localidad</label>
+                <input type="text" id="ciudad" name="ciudad" placeholder="Badajoz, Cáceres..." />
+              </div>
+              <div class="form-group full">
+                <label for="redes">Redes sociales & plataformas</label>
+                <input type="text" id="redes" name="redes_sociales" placeholder="Instagram, Spotify, TikTok, YouTube... (pega los enlaces)" />
+              </div>
+              <div class="form-group full">
+                <label for="descripcion">Cuéntanos tu proyecto *</label>
+                <textarea id="descripcion" name="descripcion" rows="4" placeholder="¿Quién eres como artista? ¿Qué música haces? ¿Dónde estás en tu carrera ahora mismo?" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="busca">¿Qué buscas de ODAE?</label>
+                <textarea id="busca" name="que_buscas" rows="3" placeholder="¿Management, producción, distribución, formación, todo? Cuéntanos qué necesitas"></textarea>
+              </div>
+              <div class="form-group full">
+                <label>Demo / Canción (opcional)</label>
+                <div class="file-upload" id="fileUploadArea">
+                  <input type="file" name="demo" id="demoFile" accept=".mp3,.wav,.aac,.m4a,.ogg,.flac" onchange="handleFile(this)" />
+                  <div class="file-upload-icon">🎵</div>
+                  <div class="file-upload-text">Arrastra tu demo o haz clic para subir</div>
+                  <div class="file-upload-hint">MP3, WAV, AAC — máx. 10 MB</div>
+                  <div class="file-name" id="fileName"></div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-yellow form-submit">Enviar propuesta →</button>
+            <p class="form-note">Respondemos a todas las propuestas en un plazo de 7–14 días hábiles.</p>
+          </form>
+        </div>
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <h3>¡Propuesta recibida!</h3>
+          <p>Gracias por confiar en ODAE. El equipo revisará tu proyecto y nos pondremos en contacto contigo en los próximos días.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contacto">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="contact-info fade-up">
+        <div class="tag">Contacto</div>
+        <h2 class="section-title">Hablemos<br/><span>cuando quieras</span></h2>
+        <p>¿Tienes dudas, quieres colaborar o simplemente quieres saber más sobre ODAE? Escríbenos.</p>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div class="contact-item-text">
+              <strong>Email</strong>
+              <!-- TODO: Actualiza con vuestro email real -->
+              <span>info@odae.es</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div class="contact-item-text">
+              <strong>Ubicación</strong>
+              <span>Extremadura, España</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div class="contact-item-text">
+              <strong>Horario de respuesta</strong>
+              <span>Lunes a viernes · 9:00 — 19:00</span>
+            </div>
+          </div>
+        </div>
+        <div class="social-links">
+          <!-- TODO: Actualiza los href con vuestros perfiles reales -->
+          <a href="#" class="social-link" title="Instagram">📸</a>
+          <a href="#" class="social-link" title="TikTok">🎵</a>
+          <a href="#" class="social-link" title="Spotify">🎧</a>
+          <a href="#" class="social-link" title="YouTube">▶️</a>
+          <a href="#" class="social-link" title="LinkedIn">💼</a>
+        </div>
+      </div>
+      <div class="contact-map fade-up">
+        <div class="map-placeholder-icon">📍</div>
+        <div class="map-region">Extremadura</div>
+        <div class="map-label">Badajoz · Cáceres</div>
+        <div style="font-size:0.8rem;color:var(--gray);text-align:center;max-width:200px;margin-top:8px;">
+          Raíces extremeñas, proyección nacional
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo">OD<span style="color:var(--yellow)">AE</span></div>
+        <p style="margin-top:12px;">Oficina de Desarrollo Artístico Extremeño. El equipo real detrás del artista emergente.</p>
+        <div style="margin-top:16px">
+          <span class="footer-badge">Extremadura, España</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="#about">Quiénes somos</a></li>
+          <li><a href="#services">Servicios</a></li>
+          <li><a href="#team">El equipo</a></li>
+          <li><a href="#propuesta">Envía tu propuesta</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul class="footer-links">
+          <li><a href="#services">Management Artístico</a></li>
+          <li><a href="#services">PR & Comunicación</a></li>
+          <li><a href="#services">Producción Musical</a></li>
+          <li><a href="#services">A&R</a></li>
+          <li><a href="#services">Distribución Digital</a></li>
+          <li><a href="#services">Formación de Industria</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ODAE — Oficina de Desarrollo Artístico Extremeño. Todos los derechos reservados.</p>
+      <p>Fundada por Oscar Elías · Ignacio · Luis Vallespín</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+  // Mobile menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('active');
+  }
+
+  // File upload display
+  function handleFile(input) {
+    const fileName = document.getElementById('fileName');
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+      if (file.size > 10 * 1024 * 1024) {
+        alert('El archivo supera los 10 MB. Por favor sube un archivo más pequeño.');
+        input.value = '';
+        fileName.style.display = 'none';
+        return;
+      }
+      fileName.textContent = `✓ ${file.name} (${sizeMB} MB)`;
+      fileName.style.display = 'block';
+    }
+  }
+
+  // Form submit — show success message
+  document.getElementById('proposalForm').addEventListener('submit', function(e) {
+    // Let FormSubmit handle the actual sending
+    // Show success UI after a short delay
+    const form = document.getElementById('formWrapper');
+    const success = document.getElementById('formSuccess');
+    setTimeout(() => {
+      form.style.display = 'none';
+      success.style.display = 'block';
+    }, 800);
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.borderBottomColor = window.scrollY > 20 ? '#2A2A2A' : 'transparent';
+  });
+</script>
+</body>
+</html>
