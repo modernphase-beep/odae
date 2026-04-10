@@ -212,14 +212,14 @@
     }
     .orbit-diagram {
       position: relative;
-      width: 380px;
-      height: 380px;
+      width: 500px;
+      height: 500px;
     }
     .orbit-center {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 90px; height: 90px;
+      width: 120px; height: 120px;
       background: var(--yellow);
       border-radius: 50%;
       display: flex;
@@ -228,29 +228,31 @@
       justify-content: center;
       z-index: 2;
     }
-    .orbit-center-icon { font-size: 1.8rem; }
+    .orbit-center-icon { font-size: 2.4rem; }
     .orbit-center-label {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.6rem;
+      font-size: 0.75rem;
       color: var(--bg);
       letter-spacing: 1px;
       text-transform: uppercase;
-      margin-top: 2px;
+      margin-top: 4px;
     }
     .orbit-ring {
       position: absolute;
       top: 50%; left: 50%;
-      width: 300px; height: 300px;
+      width: 400px; height: 400px;
       transform: translate(-50%, -50%);
       border: 1px dashed rgba(245,197,24,0.25);
       border-radius: 50%;
-      animation: spin 30s linear infinite;
     }
-    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1);    border-color: var(--border);               box-shadow: 0 0 0px 0px rgba(245,197,24,0); }
+      50%       { transform: scale(1.12); border-color: rgba(245,197,24,0.8); box-shadow: 0 0 14px 4px rgba(245,197,24,0.25); }
+    }
     .orbit-node {
       position: absolute;
-      width: 72px; height: 72px;
+      width: 100px; height: 100px;
       background: var(--card);
       border: 1.5px solid var(--border);
       border-radius: 50%;
@@ -258,28 +260,38 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 2rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
       transition: border-color 0.3s;
-      animation: counter-spin 30s linear infinite;
+      animation: breathe 4s ease-in-out infinite;
     }
-    @keyframes counter-spin { to { transform: rotate(-360deg); } }
-    .orbit-node:hover { border-color: var(--yellow); }
+    .node-1 { animation-delay: 0s; }
+    .node-2 { animation-delay: 0.57s; }
+    .node-3 { animation-delay: 1.14s; }
+    .node-4 { animation-delay: 1.71s; }
+    .node-5 { animation-delay: 2.28s; }
+    .node-6 { animation-delay: 2.85s; }
+    .node-7 { animation-delay: 3.43s; }
+    .orbit-node:hover { border-color: var(--yellow); transform: scale(1.15); animation-play-state: paused; }
     .orbit-node-label {
-      font-size: 0.5rem;
-      font-weight: 600;
+      font-size: 0.65rem;
+      font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: var(--gray);
-      margin-top: 3px;
+      color: var(--light);
+      margin-top: 5px;
       font-family: 'Montserrat', sans-serif;
     }
-    /* Position nodes around the ring (r=150 from center of 380px container = 190px center) */
-    .node-1 { top: calc(50% - 150px - 36px); left: calc(50% - 36px); }
-    .node-2 { top: calc(50% - 75px - 36px); left: calc(50% + 130px - 36px); }
-    .node-3 { top: calc(50% + 75px - 36px); left: calc(50% + 130px - 36px); }
-    .node-4 { top: calc(50% + 150px - 36px); left: calc(50% - 36px); }
-    .node-5 { top: calc(50% + 75px - 36px); left: calc(50% - 130px - 36px); }
-    .node-6 { top: calc(50% - 75px - 36px); left: calc(50% - 130px - 36px); }
+    /* 7 nodos, r=185px, paso=360/7≈51.4°, inicio -90° (arriba) */
+    .node-1 { top: calc(50% - 185px - 50px); left: calc(50% - 50px); }           /* -90° */
+    .node-2 { top: calc(50% - 115px - 50px); left: calc(50% + 95px); }            /* -38.6° */
+    .node-3 { top: calc(50% + 42px - 50px); left: calc(50% + 131px); }            /* 12.9° */
+    .node-4 { top: calc(50% + 167px - 50px); left: calc(50% + 30px); }            /* 64.3° */
+    .node-5 { top: calc(50% + 167px - 50px); left: calc(50% - 130px - 50px); }    /* 115.7° */
+    .node-6 { top: calc(50% + 42px - 50px); left: calc(50% - 231px); }            /* 167.1° */
+    .node-7 { top: calc(50% - 115px - 50px); left: calc(50% - 245px); }           /* 218.6° */
 
     /* ─── Stats Bar ─── */
     .stats-bar {
@@ -390,6 +402,15 @@
     }
     .service-card:hover { border-color: rgba(245,197,24,0.3); transform: translateY(-4px); }
     .service-card:hover::after { width: 100%; }
+    @keyframes card-highlight {
+      0%   { border-color: var(--yellow); box-shadow: 0 0 0 0 rgba(245,197,24,0.5); }
+      40%  { border-color: var(--yellow); box-shadow: 0 0 0 10px rgba(245,197,24,0); }
+      100% { border-color: var(--border); box-shadow: none; }
+    }
+    .service-card:target {
+      animation: card-highlight 1.4s ease-out forwards;
+    }
+    .service-card:target::after { width: 100%; }
     .service-icon {
       width: 52px; height: 52px;
       background: rgba(245,197,24,0.1);
@@ -415,52 +436,66 @@
     .team-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       transition: border-color 0.3s, transform 0.3s;
     }
-    .team-card:hover { border-color: rgba(245,197,24,0.4); transform: translateY(-4px); }
+    .team-card:hover { border-color: rgba(245,197,24,0.5); transform: translateY(-4px); }
     .team-card-header {
-      background: linear-gradient(135deg, var(--surface) 0%, #0F0F0F 100%);
-      padding: 40px 28px 28px;
-      display: flex;
-      align-items: flex-end;
-      gap: 20px;
-      border-bottom: 1px solid var(--border);
+      position: relative;
+      height: 280px;
+      overflow: hidden;
     }
     .team-avatar {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: var(--yellow);
+      width: 100%; height: 100%;
+      background: var(--surface);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Montserrat', sans-serif;
       font-weight: 900;
-      font-size: 1.5rem;
-      color: var(--bg);
-      flex-shrink: 0;
-      border: 3px solid rgba(245,197,24,0.3);
+      font-size: 4rem;
+      color: var(--yellow);
+    }
+    .team-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    /* gradiente sobre la foto para legibilidad del nombre */
+    .team-card-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .team-card-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 2;
+      padding: 16px 20px;
     }
     .team-name {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
       font-size: 1.1rem;
+      color: #fff;
     }
-    .team-role { color: var(--yellow); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
-    .team-body { padding: 24px 28px; }
-    .team-bio { color: var(--gray); font-size: 0.88rem; line-height: 1.7; }
+    .team-role { color: var(--yellow); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.5px; margin-top: 3px; }
+    .team-body { padding: 16px 20px 20px; }
+    .team-bio { display: none; }
     .team-tag {
       display: inline-block;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 3px 10px;
+      padding: 4px 12px;
       font-size: 0.75rem;
       color: var(--light);
-      margin: 6px 4px 0 0;
+      margin: 5px 4px 0 0;
     }
-    .team-tags { margin-top: 16px; }
+    .team-tags { margin-top: 0; }
 
     /* ─── Proposal Form ─── */
     #propuesta {
@@ -522,6 +557,32 @@
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.full { grid-column: 1 / -1; }
+    .svc-checks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .svc-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--gray);
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      user-select: none;
+    }
+    .svc-check input { display: none; }
+    .svc-check:hover { border-color: rgba(245,197,24,0.4); color: #fff; }
+    .svc-check:has(input:checked) {
+      border-color: var(--yellow);
+      background: rgba(245,197,24,0.1);
+      color: var(--yellow);
+    }
     label {
       font-size: 0.8rem;
       font-weight: 600;
@@ -830,12 +891,11 @@
         <span class="hero-eyebrow-text">Extremadura · Industria Creativa</span>
       </div>
       <h1 class="hero-title">
-        Autogestiona<br/>
-        tu carrera.<br/>
-        <span class="highlight">Crece de verdad.</span>
+        Tienes el talento,<br/>
+        <span class="highlight">Nosotros lo impulsamos.</span>
       </h1>
       <p class="hero-sub">
-        ODAE es la oficina que cierra la brecha formativa y profesional del artista extremeño: management, PR, distribución digital, marketing musical y formación real de la industria creativa.
+        ¿Quieres ser artista y todavía no has empezado ni con las canciones? ¿Ya tienes las canciones, pero no sabes qué hacer con ellas? ¿Ya las has colocado, pero no estás viendo sus frutos? ODAE puede unirse a ti y trabajar junto a ti — o trabajar para ti — en cualquiera de esos momentos.
       </p>
       <div class="hero-actions">
         <a href="#propuesta" class="btn btn-yellow">Envía tu propuesta →</a>
@@ -854,30 +914,34 @@
           <div class="orbit-center-icon">🎤</div>
           <div class="orbit-center-label">Artista</div>
         </div>
-        <div class="orbit-node node-1">
+        <a href="#svc-manager" class="orbit-node node-1">
           <div>🎯</div>
           <div class="orbit-node-label">Manager</div>
-        </div>
-        <div class="orbit-node node-2">
+        </a>
+        <a href="#svc-pr" class="orbit-node node-2">
           <div>📣</div>
           <div class="orbit-node-label">PR</div>
-        </div>
-        <div class="orbit-node node-3">
+        </a>
+        <a href="#svc-digital" class="orbit-node node-3">
           <div>🌐</div>
-          <div class="orbit-node-label">Digital</div>
-        </div>
-        <div class="orbit-node node-4">
+          <div class="orbit-node-label">Distribución</div>
+        </a>
+        <a href="#svc-formacion" class="orbit-node node-4">
           <div>📚</div>
           <div class="orbit-node-label">Formación</div>
-        </div>
-        <div class="orbit-node node-5">
+        </a>
+        <a href="#svc-ar" class="orbit-node node-5">
           <div>🎼</div>
           <div class="orbit-node-label">A&R</div>
-        </div>
-        <div class="orbit-node node-6">
+        </a>
+        <a href="#svc-produccion" class="orbit-node node-6">
           <div>🎚️</div>
           <div class="orbit-node-label">Producción</div>
-        </div>
+        </a>
+        <a href="#svc-publishing" class="orbit-node node-7">
+          <div>©️</div>
+          <div class="orbit-node-label">Publishing</div>
+        </a>
       </div>
     </div>
   </div>
@@ -924,12 +988,11 @@
         <div class="about-pills">
           <span class="about-pill">🎤 Management integral</span>
           <span class="about-pill">🎚️ Producción musical</span>
-          <span class="about-pill">📣 PR & Relaciones Públicas</span>
           <span class="about-pill">🌐 Distribución digital</span>
-          <span class="about-pill">📚 Marketing & Autogestión</span>
           <span class="about-pill">🏷️ A&R</span>
-          <span class="about-pill">📊 Spotify for Artists</span>
-          <span class="about-pill">📧 Email Marketing</span>
+          <span class="about-pill">📱 Social Media</span>
+          <span class="about-pill">📣 Marketing y Promoción</span>
+          <span class="about-pill">🎙️ Ponencias, Mentorías y Formación</span>
         </div>
       </div>
       <div class="about-text fade-up">
@@ -950,6 +1013,277 @@
   </div>
 </section>
 
+<!-- ═══ MARSHALL SCENE ═══ -->
+<style>
+  #marshall-scene { padding: 0 !important; }
+  .ms-stage {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(90deg,
+        transparent 0px, transparent 59px,
+        rgba(0,0,0,0.07) 60px)
+      ,linear-gradient(180deg, #4a2e14 0%, #6b3f1f 55%, #7a4e28 100%);
+  }
+  .ms-floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 140px;
+    z-index: 1;
+    background:
+      repeating-linear-gradient(91deg,
+        transparent 0px, transparent 89px,
+        rgba(0,0,0,0.09) 90px)
+      ,linear-gradient(180deg, #9a6428 0%, #b07830 50%, #7a5220 100%);
+    border-top: 4px solid rgba(0,0,0,0.3);
+  }
+  /* ── Amp body ── */
+  .ms-amp {
+    position: absolute;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    z-index: 5;
+    background: #141414;
+    border-radius: 8px 8px 4px 4px;
+    border: 2px solid #2a2a2a;
+    box-shadow:
+      0 12px 50px rgba(0,0,0,0.8),
+      0 2px 0 rgba(255,255,255,0.04) inset;
+  }
+  .ms-amp-top {
+    background: #0e0e0e;
+    border-radius: 6px 6px 0 0;
+    padding: 10px 0 6px;
+    text-align: center;
+    border-bottom: 2px solid #000;
+  }
+  .ms-amp-logo {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: #c8a84b;
+    letter-spacing: 6px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+  .ms-amp-model {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.38rem;
+    color: #555;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .ms-grille {
+    margin: 0;
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+    background: #111;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  /* tela del altavoz: puntos */
+  .ms-grille::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, #252525 1px, transparent 1px);
+    background-size: 6px 6px;
+  }
+  /* círculo altavoz */
+  .ms-grille::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.06);
+    box-shadow:
+      0 0 0 14px rgba(255,255,255,0.025),
+      0 0 0 28px rgba(255,255,255,0.01),
+      inset 0 0 20px rgba(0,0,0,0.8);
+  }
+  .ms-controls {
+    padding: 10px 18px 8px;
+    background: #0c0c0c;
+    border-top: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .ms-knob {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #3a3a3a, #0d0d0d);
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset;
+    position: relative;
+  }
+  .ms-knob::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 50%;
+    transform: translateX(-50%);
+    width: 2px; height: 6px;
+    background: #c8a84b;
+    border-radius: 1px;
+  }
+  .ms-knob.gold {
+    background: radial-gradient(circle at 38% 35%, #d4aa50, #7a5c1e);
+    border-color: rgba(200,168,75,0.4);
+  }
+  .ms-knob.gold::after { background: #fff; }
+  .ms-feet {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: #0c0c0c;
+    border-radius: 0 0 4px 4px;
+  }
+  .ms-foot {
+    width: 28px; height: 12px;
+    background: #1c1c1c;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid #333;
+    border-top: none;
+  }
+  /* ── Post-it ── */
+  .ms-postit {
+    position: absolute;
+    z-index: 10;
+    top: 60px;
+    left: calc(50% + 130px);
+    width: 150px;
+    background: #fef08a;
+    padding: 14px 12px 18px;
+    transform: rotate(2.5deg);
+    box-shadow: 4px 5px 20px rgba(0,0,0,0.45);
+  }
+  /* franja adhesiva superior */
+  .ms-postit::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 8px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.08), transparent);
+  }
+  .ms-postit-pin {
+    position: absolute;
+    top: -9px; left: 50%;
+    transform: translateX(-50%);
+    width: 13px; height: 13px;
+    background: radial-gradient(circle at 38% 35%, #f87171, #7f1d1d);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  }
+  .ms-postit h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #92400e;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 0 0 10px;
+  }
+  .ms-postit ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ms-postit ul li {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #1c1917;
+    line-height: 1.2;
+  }
+  /* ── Cable ── */
+  .ms-cable {
+    position: absolute;
+    bottom: 126px;
+    left: calc(50% - 260px);
+    z-index: 3;
+    width: 340px;
+    opacity: 0.5;
+  }
+  /* ── Sombra del amp en el suelo ── */
+  .ms-shadow {
+    position: absolute;
+    bottom: 136px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px; height: 20px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    filter: blur(12px);
+    z-index: 4;
+  }
+  @media (max-width: 640px) {
+    .ms-stage { height: 360px; }
+    .ms-amp { width: 200px; bottom: 110px; }
+    .ms-grille { height: 120px; }
+    .ms-floor { height: 110px; }
+    .ms-postit { left: calc(50% + 100px); width: 120px; top: 70px; }
+    .ms-shadow { bottom: 106px; }
+  }
+</style>
+
+<section id="marshall-scene">
+  <div class="ms-stage">
+    <div class="ms-floor"></div>
+    <div class="ms-shadow"></div>
+
+    <div class="ms-amp">
+      <div class="ms-amp-top">
+        <div class="ms-amp-logo">Marshall</div>
+        <div class="ms-amp-model">1987X · Plexi</div>
+      </div>
+      <div class="ms-grille"></div>
+      <div class="ms-controls">
+        <div class="ms-knob"></div>
+        <div class="ms-knob"></div>
+        <div class="ms-knob"></div>
+        <div class="ms-knob gold"></div>
+        <div class="ms-knob gold"></div>
+        <div class="ms-knob"></div>
+      </div>
+      <div class="ms-feet">
+        <div class="ms-foot"></div>
+        <div class="ms-foot"></div>
+      </div>
+    </div>
+
+    <div class="ms-postit">
+      <div class="ms-postit-pin"></div>
+      <h4>Recuérdalo 📌</h4>
+      <ul>
+        <li>🎤 Management integral</li>
+        <li>🎚️ Producción musical</li>
+        <li>🌐 Distribución digital</li>
+        <li>🏷️ A&amp;R</li>
+        <li>📱 Social Media</li>
+        <li>📲 Publicar en redes</li>
+      </ul>
+    </div>
+
+    <svg class="ms-cable" viewBox="0 0 340 60" fill="none">
+      <path d="M0 50 C60 20 100 55 160 35 S260 10 340 40"
+            stroke="#111" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="0" cy="50" r="5" fill="#333"/>
+      <circle cx="340" cy="40" r="5" fill="#333"/>
+    </svg>
+  </div>
+</section>
+
 <!-- ═══ SERVICES ═══ -->
 <section id="services">
   <div class="container">
@@ -959,35 +1293,40 @@
       <p class="section-sub">Todo lo que necesitas para profesionalizar y autogestionar tu carrera artística, bajo un mismo techo.</p>
     </div>
     <div class="services-grid">
-      <div class="service-card fade-up">
+      <div id="svc-manager" class="service-card fade-up">
         <div class="service-icon">🎯</div>
         <div class="service-name">Management Artístico</div>
         <p class="service-desc">Coordinamos toda tu carrera: agenda, negociaciones, contratos, relaciones con sellos y promotores. Tú te centras en crear; nosotros en que todo funcione y sea sostenible a largo plazo.</p>
       </div>
-      <div class="service-card fade-up">
+      <div id="svc-pr" class="service-card fade-up">
         <div class="service-icon">📣</div>
         <div class="service-name">PR & Relaciones Públicas</div>
         <p class="service-desc">Visibilidad en medios locales, regionales y nacionales. Notas de prensa, entrevistas, campañas promocionales y gestión de envío de promos con herramientas como Submithub, Groover y Fatdrop.</p>
       </div>
-      <div class="service-card fade-up">
+      <div id="svc-produccion" class="service-card fade-up">
         <div class="service-icon">🎚️</div>
         <div class="service-name">Producción Musical</div>
-        <p class="service-desc">Conectamos al artista con productores para desarrollar su sonido e identidad. Supervisión del proceso creativo desde la composición hasta el master final listo para distribución.</p>
+        <p class="service-desc">Somos los productores. Desarrollamos el sonido e identidad del artista desde dentro, acompañándole desde la composición hasta el master final listo para distribución.</p>
       </div>
-      <div class="service-card fade-up">
+      <div id="svc-ar" class="service-card fade-up">
         <div class="service-icon">🏷️</div>
         <div class="service-name">A&R — Desarrollo Artístico</div>
         <p class="service-desc">Asesoramiento en repertorio, identidad artística y posicionamiento de mercado. Detectamos el potencial del artista y diseñamos una hoja de ruta profesional realista y ambiciosa.</p>
       </div>
-      <div class="service-card fade-up">
+      <div id="svc-digital" class="service-card fade-up">
         <div class="service-icon">🌐</div>
         <div class="service-name">Distribución & Marketing Digital</div>
         <p class="service-desc">Lanzamientos en Spotify, Apple Music, Bandcamp y YouTube. Estrategia de pitching a playlists, campañas en redes sociales, email marketing con Mailchimp y segmentación de audiencias.</p>
       </div>
-      <div class="service-card fade-up">
+      <div id="svc-formacion" class="service-card fade-up">
         <div class="service-icon">📚</div>
-        <div class="service-name">Formación de Industria</div>
-        <p class="service-desc">Formamos al artista durante todo el proceso: derechos de autor, contratos, marketing musical, Spotify for Artists, YouTube for Artists, autogestión y funcionamiento real del negocio creativo.</p>
+        <div class="service-name">Formación Específica</div>
+        <p class="service-desc">Ponencias, cursos personalizados, masterclasses y mentorías personales para artistas que quieren entender la industria y tomar el control de su carrera con criterio propio.</p>
+      </div>
+      <div id="svc-publishing" class="service-card fade-up">
+        <div class="service-icon">©️</div>
+        <div class="service-name">Publishing & Derechos de Autor</div>
+        <p class="service-desc">Registro y gestión de obras, representación ante entidades de gestión colectiva (SGAE, AGEDI), administración de derechos de sincronización y edición musical para que el artista cobre lo que le corresponde.</p>
       </div>
     </div>
   </div>
@@ -1004,14 +1343,13 @@
     <div class="team-grid">
       <div class="team-card fade-up">
         <div class="team-card-header">
-          <div class="team-avatar">OE</div>
-          <div>
+          <div class="team-avatar"><img src="oscar.jpg" alt="Oscar Elías"></div>
+          <div class="team-card-info">
             <div class="team-name">Oscar Elías</div>
             <div class="team-role">Fundador · Co-director</div>
           </div>
         </div>
         <div class="team-body">
-          <p class="team-bio">Visionario del proyecto ODAE y motor estratégico detrás de la oficina. Apasionado de la industria musical y del talento emergente extremeño.</p>
           <div class="team-tags">
             <span class="team-tag">Estrategia</span>
             <span class="team-tag">Dirección</span>
@@ -1022,14 +1360,12 @@
       <div class="team-card fade-up">
         <div class="team-card-header">
           <div class="team-avatar">IG</div>
-          <div>
-            <!-- TODO: Completar apellido de Ignacio -->
+          <div class="team-card-info">
             <div class="team-name">Ignacio</div>
             <div class="team-role">Fundador · Co-director</div>
           </div>
         </div>
         <div class="team-body">
-          <p class="team-bio">Co-fundador de ODAE con una sólida trayectoria en el mundo artístico y musical. Especialista en el acompañamiento y desarrollo de artistas emergentes.</p>
           <div class="team-tags">
             <span class="team-tag">Producción</span>
             <span class="team-tag">Management</span>
@@ -1040,13 +1376,12 @@
       <div class="team-card fade-up">
         <div class="team-card-header">
           <div class="team-avatar">LV</div>
-          <div>
+          <div class="team-card-info">
             <div class="team-name">Luis Vallespín</div>
             <div class="team-role">Fundador · Co-director</div>
           </div>
         </div>
         <div class="team-body">
-          <p class="team-bio">Co-fundador de ODAE con visión clara sobre comunicación, tecnología y distribución digital en la industria musical contemporánea.</p>
           <div class="team-tags">
             <span class="team-tag">Comunicación</span>
             <span class="team-tag">Digital</span>
@@ -1166,8 +1501,21 @@
                 <textarea id="descripcion" name="descripcion" rows="4" placeholder="¿Quién eres como artista? ¿Qué disciplina practicas? ¿Dónde estás en tu carrera ahora mismo?" required></textarea>
               </div>
               <div class="form-group full">
-                <label for="busca">¿Qué buscas de ODAE?</label>
-                <textarea id="busca" name="que_buscas" rows="3" placeholder="¿Management, PR, distribución digital, formación en marketing, autogestión...? Cuéntanos qué necesitas"></textarea>
+                <label>¿Qué buscas de ODAE? <span style="color:var(--gray);font-weight:400;">(selecciona todo lo que aplique)</span></label>
+                <div class="svc-checks">
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Management integral"><span>🎤 Management integral</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Producción musical"><span>🎚️ Producción musical</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Distribución digital"><span>🌐 Distribución digital</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="A&R"><span>🏷️ A&amp;R</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Social Media"><span>📱 Social Media</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Marketing y Promoción"><span>📣 Marketing y Promoción</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Formación de Industria"><span>📚 Formación de Industria</span></label>
+                  <label class="svc-check"><input type="checkbox" name="que_buscas[]" value="Ponencias Mentorías y Formación"><span>🎙️ Ponencias, Mentorías y Formación</span></label>
+                  <label class="svc-check" style="grid-column: 1 / -1;"><input type="checkbox" name="que_buscas[]" value="Otros" id="chk-otros" onchange="document.getElementById('otros-box').style.display=this.checked?'block':'none'"><span>✳️ Otros</span></label>
+                  <div id="otros-box" style="grid-column:1/-1;display:none;">
+                    <textarea name="otros_detalle" rows="2" placeholder="Cuéntanos qué más necesitas..." style="width:100%;margin-top:4px;"></textarea>
+                  </div>
+                </div>
               </div>
               <div class="form-group full">
                 <label>Demo / Canción (opcional)</label>
