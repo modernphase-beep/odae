@@ -895,7 +895,7 @@
         <span class="highlight">Nosotros lo impulsamos.</span>
       </h1>
       <p class="hero-sub">
-        ¿Quieres ser artista y todavía no has empezado ni con las canciones? ¿Ya tienes las canciones, pero no sabes qué hacer con ellas? ¿Ya las has colocado, pero no estás viendo sus frutos? ODAE puede unirse a ti y trabajar junto a ti — o trabajar para ti — en cualquiera de esos momentos.
+        ¿Eres creador y todavía no has empezado ni con las canciones? ¿Ya tienes las canciones, pero no sabes qué hacer con ellas? ¿Ya las has colocado, pero no estás viendo sus frutos? ODAE puede unirse a ti y trabajar junto a ti — o trabajar para ti — en cualquiera de esos momentos.
       </p>
       <div class="hero-actions">
         <a href="#propuesta" class="btn btn-yellow">Envía tu propuesta →</a>
@@ -1442,10 +1442,7 @@
             CONFIGURACIÓN: Cambia "info@odae.es" por vuestro email real
             FormSubmit procesa el formulario gratis sin necesidad de backend
           -->
-          <form id="proposalForm" action="https://formsubmit.co/odaemusic@gmail.com" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_subject" value="Nueva propuesta artística — ODAE" />
-            <input type="hidden" name="_next" value="https://modernphase-beep.github.io/odae/?enviado=1" />
-            <input type="hidden" name="_captcha" value="false" />
+          <form id="proposalForm" onsubmit="enviarPropuesta(event)">
             <div class="form-grid">
               <div class="form-group">
                 <label for="nombre">Nombre artístico *</label>
@@ -1660,17 +1657,46 @@
     }
   }
 
-  // Form submit — show success message
-  document.getElementById('proposalForm').addEventListener('submit', function(e) {
-    // Let FormSubmit handle the actual sending
-    // Show success UI after a short delay
-    const form = document.getElementById('formWrapper');
+  // ── CONFIGURACIÓN ──────────────────────────────────────
+  const SCRIPT_URL = 'PEGA_AQUI_TU_URL';
+  // ───────────────────────────────────────────────────────
+
+  async function enviarPropuesta(e) {
+    e.preventDefault();
+    const form    = document.getElementById('proposalForm');
+    const btn     = form.querySelector('.form-submit');
+    const wrapper = document.getElementById('formWrapper');
     const success = document.getElementById('formSuccess');
-    setTimeout(() => {
-      form.style.display = 'none';
-      success.style.display = 'block';
-    }, 800);
-  });
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const fd = new FormData(form);
+    const data = {
+      nombre_artistico : fd.get('nombre_artistico') || '',
+      nombre_real      : fd.get('nombre_real')      || '',
+      email            : fd.get('email')            || '',
+      telefono         : fd.get('telefono')         || '',
+      disciplina       : fd.get('disciplina')       || '',
+      ciudad           : fd.get('ciudad')           || '',
+      redes_sociales   : fd.get('redes_sociales')   || '',
+      descripcion      : fd.get('descripcion')      || '',
+      que_buscas       : fd.getAll('que_buscas[]'),
+      otros_detalle    : fd.get('otros_detalle')    || ''
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      });
+    } catch (_) { /* no-cors no devuelve respuesta, ignorar */ }
+
+    wrapper.style.display = 'none';
+    success.style.display = 'block';
+  }
 
   // Scroll animations
   const observer = new IntersectionObserver((entries) => {
