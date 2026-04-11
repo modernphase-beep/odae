@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ODAE — Panel de Propuestas</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -354,20 +356,75 @@
 
   const COLS = ['Fecha','Nombre artístico','Nombre real','Email','Teléfono','Disciplina','Ciudad','Redes','Descripción','Qué busca','Otros'];
 
-  let datos = [];        // filas crudas (sin cabecera)
+  let datos = [];
   let datosFiltrados = [];
   let sortCol = 0;
   let sortAsc = false;
   let claveAdmin = '';
 
+  const MAX_INTENTOS = 3;
+  const BLOQUEO_MS   = 5 * 60 * 1000;  // 5 minutos
+  const SESSION_MS   = 60 * 60 * 1000; // 1 hora
+
+  function getIntentos() {
+    const d = JSON.parse(localStorage.getItem('odae_login') || '{}');
+    return d;
+  }
+  function setIntentos(obj) {
+    localStorage.setItem('odae_login', JSON.stringify(obj));
+  }
+
   function entrar() {
     const clave = document.getElementById('inputClave').value.trim();
     if (!clave) return;
+
+    // Comprobar bloqueo
+    const d = getIntentos();
+    if (d.bloqueadoHasta && Date.now() < d.bloqueadoHasta) {
+      const mins = Math.ceil((d.bloqueadoHasta - Date.now()) / 60000);
+      mostrarError('Demasiados intentos. Espera ' + mins + ' min.');
+      return;
+    }
+
     claveAdmin = clave;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-screen').style.display = 'block';
     document.getElementById('btnLogout').style.display = 'inline-block';
+
+    // Guardar sesión
+    sessionStorage.setItem('odae_session', JSON.stringify({ hasta: Date.now() + SESSION_MS }));
+    setIntentos({});
+
     cargarDatos();
+  }
+
+  function verificarSesion() {
+    const s = JSON.parse(sessionStorage.getItem('odae_session') || '{}');
+    if (s.hasta && Date.now() > s.hasta) {
+      cerrarSesion();
+      mostrarError('Sesion expirada. Vuelve a entrar.');
+      return false;
+    }
+    return true;
+  }
+
+  function manejarErrorAuth() {
+    const d = getIntentos();
+    const intentos = (d.intentos || 0) + 1;
+    if (intentos >= MAX_INTENTOS) {
+      setIntentos({ intentos: 0, bloqueadoHasta: Date.now() + BLOQUEO_MS });
+      mostrarError('3 intentos fallidos. Bloqueado 5 minutos.');
+    } else {
+      setIntentos({ intentos });
+      mostrarError('Clave incorrecta. Intentos restantes: ' + (MAX_INTENTOS - intentos));
+    }
+    cerrarSesion();
+  }
+
+  function mostrarError(msg) {
+    const el = document.getElementById('login-error');
+    el.textContent = msg;
+    el.style.display = 'block';
   }
 
   function cerrarSesion() {
@@ -381,6 +438,8 @@
   }
 
   async function cargarDatos() {
+    if (!verificarSesion()) return;
+
     document.getElementById('tableContent').innerHTML =
       '<div class="state-msg"><div class="spinner"></div><p>Cargando propuestas...</p></div>';
 
@@ -390,8 +449,7 @@
 
       if (!Array.isArray(json)) {
         if (json.error === 'No autorizado') {
-          document.getElementById('login-error').style.display = 'block';
-          cerrarSesion();
+          manejarErrorAuth();
           return;
         }
         throw new Error(json.error || 'Respuesta inesperada');

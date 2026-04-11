@@ -1443,6 +1443,8 @@
             FormSubmit procesa el formulario gratis sin necesidad de backend
           -->
           <form id="proposalForm" onsubmit="enviarPropuesta(event)">
+            <!-- honeypot anti-spam -->
+            <input type="text" name="website" style="display:none;position:absolute;left:-9999px;" tabindex="-1" autocomplete="off" />
             <div class="form-grid">
               <div class="form-group">
                 <label for="nombre">Nombre artístico *</label>
@@ -1667,6 +1669,9 @@
     const btn     = form.querySelector('.form-submit');
     const wrapper = document.getElementById('formWrapper');
     const success = document.getElementById('formSuccess');
+
+    // Honeypot: si un bot rellenó este campo, ignorar silenciosamente
+    if (fd.get('website')) return;
 
     btn.disabled = true;
     btn.textContent = 'Enviando...';

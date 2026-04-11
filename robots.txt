@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin.html
+Disallow: /script_odae.js
+
+User-agent: *
+Allow: /
